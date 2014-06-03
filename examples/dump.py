@@ -6,10 +6,9 @@ This can be set up in a cronjob to dump data daily.
 Create a config file at ~/.fitbit.conf with the following:
 
 [fitbit]
-user_id: 12XXX 
-sid: XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+user_id: XXXXX 
 uid: 123456
-uis: XXX%3D
+u: <large string>
 dump_dir: ~/Dropbox/fitbit
 """
 import time
@@ -24,7 +23,7 @@ CONFIG.read(["fitbit.conf", os.path.expanduser("~/.fitbit.conf")])
 DUMP_DIR=os.path.expanduser(CONFIG.get('fitbit', 'dump_dir'))
 
 def client():
-    return fitbit.Client(CONFIG.get('fitbit', 'user_id'), CONFIG.get('fitbit', 'sid'), CONFIG.get('fitbit', 'uid'), CONFIG.get('fitbit', 'uis'))
+    return fitbit.Client(CONFIG.get('fitbit', 'user_id'), CONFIG.get('fitbit', 'uid'), CONFIG.get('fitbit', 'u'))
 
 def dump_to_str(data):
     return "\n".join(["%s,%s" % (str(ts), v) for ts, v in data])
@@ -43,7 +42,10 @@ def dump_day(date):
     time.sleep(5)    
     dump_to_file("calories", date, c.intraday_calories_burned(date))
     time.sleep(5)
-    dump_to_file("active_score", date, c.intraday_active_score(date))
+    #dump_to_file("active_score", date, c.intraday_active_score(date))
+    dump_to_file("floors", date, c.intraday_floors(date))
+    time.sleep(5)
+    dump_to_file("distance", date, c.intraday_distance(date))
     time.sleep(5)
     dump_to_file("sleep", date, c.intraday_sleep(date))
     time.sleep(5)
